@@ -1,8 +1,41 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const PORT = 3000;
+
+// API Documentation
+const apiEndpoints = [
+    {
+        Method: 'GET',
+        Path: '/health',
+        Description: 'Health check endpoint to verify service status'
+    },
+    {
+        Method: 'POST',
+        Path: '/auth/token',
+        Description: 'Authenticate and get access token using client credentials'
+    },
+    {
+        Method: 'POST',
+        Path: '/loyalty/members',
+        Description: 'Create a new loyalty member with email and profile details'
+    },
+    {
+        Method: 'GET',
+        Path: '/api/v1/loyalty/memberRewards',
+        Description: 'Retrieve member rewards using member email'
+    },
+    {
+        Method: 'GET',
+        Path: '/api/v1/loyalty/members',
+        Description: 'Get customer details using member email'
+    }
+];
+
+// Display API Documentation
+console.log('\n=== Available API Endpoints ===\n');
+console.table(apiEndpoints);
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -140,6 +173,15 @@ app.get('/api/v1/loyalty/members', (req: any, res: any) => {
 
     res.status(200).json(customerDetailsResponse);
 });
+
+
+
+
+
+
+
+
+
 
 
 app.listen(PORT, () => {
