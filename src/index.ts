@@ -7,6 +7,25 @@ const PORT = 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Health check endpoint
+app.get('/health', (req: Request, res: Response) => {
+    res.status(200).json({
+        isError: false,
+        data: {
+            status: 'healthy',
+            timestamp: new Date().toISOString()
+        },
+        developerMessage: '',
+        userMessage: 'Service is healthy',
+        moreInfo: null,
+        responseCode: 10000,
+        httpStatusCode: 200,
+        errors: null,
+        requestId: uuidv4()
+    });
+});
+
+
 // Auth token endpoint
 app.post('/auth/token', (req: any, res: any) => {
     const { clientSecret, clientId } = req.body;
