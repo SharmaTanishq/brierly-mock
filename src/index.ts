@@ -65,11 +65,37 @@ app.post('/loyalty/members', (req: Request, res: Response) => {
     }
 
     // Import response data
-    const createCustomerResponse = require('./sampleResponse/createCustomer.json');
+
 
     const response = require('./sampleResponse/customerCreatedResponse.json');
     res.status(201).json(response);
 });
+
+// Get Member Rewards endpoint
+app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
+    const { 'member.email': memberEmail } = req.query;
+
+    // Check if required email parameter is present
+    if (!memberEmail) {
+        return res.status(400).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing required query parameter",
+            userMessage: "Missing required parameter",
+            moreInfo: null,
+            responseCode: 10001,
+            httpStatusCode: 400,
+            errors: ["member.email is a required parameter"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Import response data
+    const memberRewardsResponse = require('./sampleResponse/retreiveMemberCoupons.json');
+
+    res.status(200).json(memberRewardsResponse);
+});
+
 
 // Get Customer Details endpoint
 app.get('/api/v1/loyalty/members', (req: any, res: any) => {
