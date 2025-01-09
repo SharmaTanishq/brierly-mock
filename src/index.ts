@@ -27,9 +27,14 @@ const apiEndpoints = [
         Description: 'Retrieve member rewards using member email'
     },
     {
-        Method: 'GET',
+        Method: 'GET', 
         Path: '/api/v1/loyalty/members',
         Description: 'Get customer details using member email'
+    },
+    {
+        Method: 'GET',
+        Path: '/api/v1/loyalty/memberRewards?rewardIdentity.expired=false&member.email=newtest.account@test.com&rewardIdentity.Redeemed=false&rewardIdentity.ContentChannel=Web',
+        Description: 'Get active coupons and rewards for a member'
     }
 ];
 
@@ -174,6 +179,52 @@ app.get('/api/v1/loyalty/members', (req: any, res: any) => {
     res.status(200).json(customerDetailsResponse);
 });
 
+
+// Get Active Coupons endpoint
+app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
+    const { 
+        'rewardIdentity.expired': expired,
+        'member.email': memberEmail,
+        'rewardIdentity.Redeemed': redeemed,
+        'rewardIdentity.ContentChannel': contentChannel
+    } = req.query;
+
+    // Get bearer token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing or invalid authorization token",
+            userMessage: "Unauthorized access",
+            moreInfo: null,
+            responseCode: 10003,
+            httpStatusCode: 401,
+            errors: ["Valid bearer token is required"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Check if required query parameters are present
+    if (!memberEmail || expired === undefined || redeemed === undefined || !contentChannel) {
+        return res.status(400).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing required query parameters",
+            userMessage: "Missing required parameters",
+            moreInfo: null,
+            responseCode: 10001,
+            httpStatusCode: 400,
+            errors: ["member.email, rewardIdentity.expired, rewardIdentity.Redeemed, and rewardIdentity.ContentChannel are required parameters"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Import response data
+    const activeCouponsResponse = require('./sampleResponse/getMemberActiveCoupons.json');
+
+    res.status(200).json(activeCouponsResponse);
+});
 
 
 
