@@ -2,6 +2,12 @@ import express, { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { BrierlyAuth } from './Brierly/BrierlyAuth';
 import { BrierlyCoupons } from './Brierly/BrierlyCoupons';
+import { customerCreatedResponse } from './sampleResponse/customerCreatedResponse';
+import { getMemberActiveCoupons } from './sampleResponse/getMemberActiveCoupons';
+//@ts-ignore
+import test from './sampleResponse/getMemberActiveCoupons';
+import { getCustomerDetails } from './sampleResponse/getCustomerDetails';
+import { retrieveMemberCoupons } from './sampleResponse/retreiveMemberCoupons';
 
 const app = express();
 const PORT = 3000;
@@ -109,19 +115,19 @@ app.post('/loyalty/members', (req: Request, res: Response) => {
     const { email, firstName, attributeSets } = req.body;
 
     // Validate required fields
-    if (!email || !firstName || !attributeSets) {
-        return res.status(400).json({
-            isError: true,
-            data: null,
-            developerMessage: "Missing required fields",
-            userMessage: "Missing required information",
-            moreInfo: null,
-            responseCode: 12002,
-            httpStatusCode: 400,
-            errors: ["email, firstName and attributeSets are required"],
-            requestId: uuidv4()
-        });
-    }
+    // if (!email || !firstName || !attributeSets) {
+    //     return res.status(400).json({
+    //         isError: true,
+    //         data: null,
+    //         developerMessage: "Missing required fields",
+    //         userMessage: "Missing required information",
+    //         moreInfo: null,
+    //         responseCode: 12002,
+    //         httpStatusCode: 400,
+    //         errors: ["email, firstName and attributeSets are required"],
+    //         requestId: uuidv4()
+    //     });
+    // }
 
     // Import response data
 
@@ -223,9 +229,9 @@ app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
     }
 
     // Import response data
-    const data = require('./sampleResponse/getMemberActiveCoupons.json');
+    
 
-    const temp = data.data?.map((reward:any) => ({
+    const temp = test.data?.map((reward:any) => ({
 
         id: reward.id,
         code: reward.id,            
