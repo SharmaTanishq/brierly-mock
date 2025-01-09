@@ -223,9 +223,27 @@ app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
     }
 
     // Import response data
-    const activeCouponsResponse = require('./sampleResponse/getMemberActiveCoupons.json');
+    const data = require('./sampleResponse/getMemberActiveCoupons.json');
 
-    res.status(200).json(activeCouponsResponse);
+    const temp = data.data?.map((reward:any) => ({
+
+        id: reward.id,
+        code: reward.id,            
+        "currencyCode": "USD",
+        "customCreditType": 'AR',
+        "creditType": 'Custom',
+        "initialBalance": 5,
+        "currentBalance": 5,
+        "isEnabled": true,
+        "activationDate": reward.createDate,            
+        
+    }));
+    
+    
+
+
+    
+    res.status(200).json(temp);
 });
 
 
