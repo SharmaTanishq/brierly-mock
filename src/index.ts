@@ -2,12 +2,13 @@ import express, { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { BrierlyAuth } from './Brierly/BrierlyAuth';
 import { BrierlyCoupons } from './Brierly/BrierlyCoupons';
-import { customerCreatedResponse } from './sampleResponse/customerCreatedResponse';
-import { getMemberActiveCoupons } from './sampleResponse/getMemberActiveCoupons';
+
+import createCustomerObject from './sampleResponse/createCustomer'; 
 //@ts-ignore
 import test from './sampleResponse/getMemberActiveCoupons';
-import { getCustomerDetails } from './sampleResponse/getCustomerDetails';
-import { retrieveMemberCoupons } from './sampleResponse/retreiveMemberCoupons';
+import customerCreatedResponse from './sampleResponse/customerCreatedResponse';
+import getMemberActiveCoupons from './sampleResponse/getMemberActiveCoupons';
+
 
 const app = express();
 const PORT = 3000;
@@ -230,7 +231,7 @@ app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
 
     // Import response data
     
-
+    console.log('Customer object:', customerCreatedResponse);
     const temp = test.data?.map((reward:any) => ({
 
         id: reward.id,
@@ -249,7 +250,7 @@ app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
 
 
     
-    res.status(200).json(temp);
+    res.status(200).json(getMemberActiveCoupons);
 });
 
 

@@ -1,4 +1,4 @@
-export const getMemberActiveCoupons = {
+const getMemberActiveCoupons = {
     isError: false,
     data: [
         {
@@ -340,3 +340,5 @@ export const getMemberActiveCoupons = {
     "errors": null,
     "requestId": "1b7fae7b-c024-4a7a-90f4-db8c97399c0d"
 }
+
+export default getMemberActiveCoupons;
