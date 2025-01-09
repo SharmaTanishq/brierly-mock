@@ -1,5 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { BrierlyAuth } from './Brierly/BrierlyAuth';
+import { BrierlyCoupons } from './Brierly/BrierlyCoupons';
 
 const app = express();
 const PORT = 3000;
@@ -129,29 +131,29 @@ app.post('/loyalty/members', (req: Request, res: Response) => {
 });
 
 // Get Member Rewards endpoint
-app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
-    const { 'member.email': memberEmail } = req.query;
+// app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
+//     const { 'member.email': memberEmail } = req.query;
 
-    // Check if required email parameter is present
-    if (!memberEmail) {
-        return res.status(400).json({
-            isError: true,
-            data: null,
-            developerMessage: "Missing required query parameter",
-            userMessage: "Missing required parameter",
-            moreInfo: null,
-            responseCode: 10001,
-            httpStatusCode: 400,
-            errors: ["member.email is a required parameter"],
-            requestId: uuidv4()
-        });
-    }
+//     // Check if required email parameter is present
+//     if (!memberEmail) {
+//         return res.status(400).json({
+//             isError: true,
+//             data: null,
+//             developerMessage: "Missing required query parameter",
+//             userMessage: "Missing required parameter",
+//             moreInfo: null,
+//             responseCode: 10001,
+//             httpStatusCode: 400,
+//             errors: ["member.email is a required parameter"],
+//             requestId: uuidv4()
+//         });
+//     }
 
-    // Import response data
-    const memberRewardsResponse = require('./sampleResponse/retreiveMemberCoupons.json');
+//     // Import response data
+//     const memberRewardsResponse = require('./sampleResponse/retreiveMemberCoupons.json');
 
-    res.status(200).json(memberRewardsResponse);
-});
+//     res.status(200).json(memberRewardsResponse);
+// });
 
 
 // Get Customer Details endpoint
@@ -228,6 +230,52 @@ app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
 
 
 
+// Demo endpoint to test BrierlyCoupons integration
+app.get('/api/v1/demo/memberCoupons', async (req: any, res: any) => {
+    try {
+        const {
+            'rewardIdentity.expired': expired = 'false',
+            'member.email': memberEmail = 'newtest.account@test.com', 
+            'rewardIdentity.Redeemed': redeemed = 'false',
+            'rewardIdentity.ContentChannel': contentChannel = 'Web'
+        } = req.query;
+        
+
+        if (!memberEmail) {
+            return res.status(400).json({
+                isError: true,
+                data: null,
+                developerMessage: "Missing email parameter",
+                userMessage: "Email is required",
+                moreInfo: null,
+                responseCode: 10001,
+                httpStatusCode: 400,
+                errors: ["email query parameter is required"],
+                requestId: uuidv4()
+            });
+        }
+
+        const auth = new BrierlyAuth();
+        const coupons = new BrierlyCoupons(auth);
+        const response = await coupons.getActiveMemberCoupons(memberEmail);
+
+        res.status(200).json(response);
+
+    } catch (error) {
+        console.error('Error in demo coupons endpoint:', error);
+        res.status(500).json({
+            isError: true,
+            data: null,
+            developerMessage: error instanceof Error ? error.message : "Unknown error occurred",
+            userMessage: "Failed to fetch coupons",
+            moreInfo: null,
+            responseCode: 10002,
+            httpStatusCode: 500,
+            errors: ["Internal server error"],
+            requestId: uuidv4()
+        });
+    }
+});
 
 
 
