@@ -49,6 +49,11 @@ const apiEndpoints = [
         Method: 'GET',
         Path: '/api/v1/loyalty/memberRewards/summary',
         Description: 'Get summary of member rewards with options for unredeemed and unexpired rewards'
+    },
+    {
+        Method: 'PATCH',
+        Path: '/api/v1/loyalty/memberRewards/:rewardId/redeem',
+        Description: 'Redeem a specific reward for a member using the reward ID'
     }
 ];
 
@@ -306,7 +311,6 @@ app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
 });
 
 
-
 // Demo endpoint to test BrierlyCoupons integration
 app.get('/api/v1/demo/memberCoupons', async (req: any, res: any) => {
     try {
@@ -354,6 +358,46 @@ app.get('/api/v1/demo/memberCoupons', async (req: any, res: any) => {
     }
 });
 
+// Redeem Member Reward endpoint
+app.patch('/api/v1/loyalty/memberRewards/:rewardId/redeem', (req: any, res: any) => {
+    const { rewardId } = req.params;
+
+    // Get bearer token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing or invalid authorization token",
+            userMessage: "Unauthorized access",
+            moreInfo: null,
+            responseCode: 10003,
+            httpStatusCode: 401,
+            errors: ["Valid bearer token is required"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Validate rewardId
+    if (!rewardId) {
+        return res.status(400).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing reward ID",
+            userMessage: "Reward ID is required",
+            moreInfo: null,
+            responseCode: 10001,
+            httpStatusCode: 400,
+            errors: ["rewardId is required"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Import response data
+    const redeemedRewardResponse = require('./sampleResponse/redeemedRewardResponse').default;
+
+    res.status(200).json(redeemedRewardResponse);
+});
 
 
 
