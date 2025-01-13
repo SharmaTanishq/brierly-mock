@@ -44,6 +44,11 @@ const apiEndpoints = [
         Method: 'GET',
         Path: '/api/v1/loyalty/memberRewards?rewardIdentity.expired=false&member.email=newtest.account@test.com&rewardIdentity.Redeemed=false&rewardIdentity.ContentChannel=Web',
         Description: 'Get active coupons and rewards for a member'
+    },
+    {
+        Method: 'GET',
+        Path: '/api/v1/loyalty/memberRewards/summary',
+        Description: 'Get summary of member rewards with options for unredeemed and unexpired rewards'
     }
 ];
 
@@ -190,6 +195,53 @@ app.get('/api/v1/loyalty/members', (req: any, res: any) => {
 
 
 // Get Active Coupons endpoint
+
+// Get Member Rewards Summary endpoint
+app.get('/api/v1/loyalty/memberRewards/summary', (req: any, res: any) => {
+    const { 
+        'member.email': memberEmail,
+        'options.UnRedeemedOnly': unRedeemedOnly,
+        'options.UnexpiredOnly': unexpiredOnly 
+    } = req.query;
+
+    // Get bearer token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing or invalid authorization token",
+            userMessage: "Unauthorized access",
+            moreInfo: null,
+            responseCode: 10003,
+            httpStatusCode: 401,
+            errors: ["Valid bearer token is required"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Check if required query parameters are present
+    if (!memberEmail || unRedeemedOnly === undefined || unexpiredOnly === undefined) {
+        return res.status(400).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing required query parameters",
+            userMessage: "Missing required parameters", 
+            moreInfo: null,
+            responseCode: 10001,
+            httpStatusCode: 400,
+            errors: ["member.email, options.UnRedeemedOnly, and options.UnexpiredOnly are required parameters"],
+            requestId: uuidv4()
+        });
+    }
+
+    // Import response data
+    const memberRewardsSummaryResponse = require('./sampleResponse/memberRewardsSummary').default;
+
+    res.status(200).json(memberRewardsSummaryResponse);
+});
+
+
 app.get('/api/v1/loyalty/memberRewards', (req: any, res: any) => {
     const { 
         'rewardIdentity.expired': expired,
