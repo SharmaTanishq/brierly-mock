@@ -22,12 +22,12 @@ const apiEndpoints = [
     },
     {
         Method: 'POST',
-        Path: '/auth/token',
+        Path: '/api/v1/auth/token',
         Description: 'Authenticate and get access token using client credentials'
     },
     {
         Method: 'POST',
-        Path: '/loyalty/members',
+        Path: '/api/v1/loyalty/members',
         Description: 'Create a new loyalty member with email and profile details'
     },
     {
@@ -79,7 +79,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 
 // Auth token endpoint
-app.post('/auth/token', (req: any, res: any) => {
+app.post('/api/v1/auth/token', (req: any, res: any) => {
     const { clientSecret, clientId } = req.body;
 
     // In a real application, you would validate the clientSecret and clientId here
@@ -117,7 +117,7 @@ app.post('/auth/token', (req: any, res: any) => {
 
 //Create Loyalty Members endpoint
 //@ts-ignore
-app.post('/loyalty/members', (req: Request, res: Response) => {
+app.post('/api/v1/loyalty/members', (req: Request, res: Response) => {
     const { email, firstName, attributeSets } = req.body;
 
     // Validate required fields
