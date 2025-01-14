@@ -276,7 +276,7 @@ app.get('/api/v1/loyalty/memberRewards/summary', (req: any, res: any) => {
     // Import response data
     
 
-    res.status(200).json(getMemberActiveCoupons);
+    res.status(200).json(memberRewardsSummary);
 });
 
 
