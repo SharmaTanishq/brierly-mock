@@ -8,7 +8,8 @@ import createCustomerObject from './sampleResponse/createCustomer';
 import test from './sampleResponse/getMemberActiveCoupons';
 import customerCreatedResponse from './sampleResponse/customerCreatedResponse';
 import getMemberActiveCoupons from './sampleResponse/getMemberActiveCoupons';
-
+import getCustomerDetails from './sampleResponse/getCustomerDetails';
+import memberRewardsSummary from './sampleResponse/memberRewardsSummary';
 
 const app = express();
 const PORT = 3000;
@@ -193,9 +194,8 @@ app.get('/api/v1/loyalty/members', (req: any, res: any) => {
     }
 
     // Import response data
-    const customerDetailsResponse = require('./sampleResponse/getCustomerDetails.json');
-
-    res.status(200).json(customerDetailsResponse);
+    
+    res.status(200).json(getCustomerDetails);
 });
 
 
