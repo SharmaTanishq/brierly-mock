@@ -10,6 +10,7 @@ import customerCreatedResponse from './sampleResponse/customerCreatedResponse';
 import getMemberActiveCoupons from './sampleResponse/getMemberActiveCoupons';
 import getCustomerDetails from './sampleResponse/getCustomerDetails';
 import memberRewardsSummary from './sampleResponse/memberRewardsSummary';
+import redeemedRewardResponse from './sampleResponse/redeemedRewardResponse';
 
 const app = express();
 const PORT = 3000;
@@ -124,28 +125,44 @@ app.post('/api/v1/auth/token', (req: any, res: any) => {
 //Create Loyalty Members endpoint
 //@ts-ignore
 app.post('/api/v1/loyalty/members', (req: Request, res: Response) => {
+    // Get bearer token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing or invalid authorization token",
+            userMessage: "Unauthorized access",
+            moreInfo: null,
+            responseCode: 10003,
+            httpStatusCode: 401,
+            errors: ["Valid bearer token is required"],
+            requestId: uuidv4()
+        });
+    }
+
     const { email, firstName, attributeSets } = req.body;
 
     // Validate required fields
-    // if (!email || !firstName || !attributeSets) {
-    //     return res.status(400).json({
-    //         isError: true,
-    //         data: null,
-    //         developerMessage: "Missing required fields",
-    //         userMessage: "Missing required information",
-    //         moreInfo: null,
-    //         responseCode: 12002,
-    //         httpStatusCode: 400,
-    //         errors: ["email, firstName and attributeSets are required"],
-    //         requestId: uuidv4()
-    //     });
-    // }
+     if (!email || !firstName || !attributeSets) {
+         return res.status(400).json({
+             isError: true,
+             data: null,
+            developerMessage: "Missing required fields",
+            userMessage: "Missing required information",
+            moreInfo: null,
+            responseCode: 12002,
+            httpStatusCode: 400,
+            errors: ["email, firstName and attributeSets are required"],
+            requestId: uuidv4()
+        });
+    }
 
     // Import response data
 
-
-    const response = require('./sampleResponse/customerCreatedResponse.json');
-    res.status(201).json(response);
+    
+    res.status(201).json(getCustomerDetails);
+    
 });
 
 // Get Member Rewards endpoint
@@ -176,6 +193,22 @@ app.post('/api/v1/loyalty/members', (req: Request, res: Response) => {
 
 // Get Customer Details endpoint
 app.get('/api/v1/loyalty/members', (req: any, res: any) => {
+    // Get bearer token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            isError: true,
+            data: null,
+            developerMessage: "Missing or invalid authorization token",
+            userMessage: "Unauthorized access",
+            moreInfo: null,
+            responseCode: 10003,
+            httpStatusCode: 401,
+            errors: ["Valid bearer token is required"],
+            requestId: uuidv4()
+        });
+    }
+
     const { include, 'member.email': memberEmail } = req.query;
 
     // Check if required query parameters are present
@@ -241,9 +274,9 @@ app.get('/api/v1/loyalty/memberRewards/summary', (req: any, res: any) => {
     }
 
     // Import response data
-    const memberRewardsSummaryResponse = require('./sampleResponse/memberRewardsSummary').default;
+    
 
-    res.status(200).json(memberRewardsSummaryResponse);
+    res.status(200).json(getMemberActiveCoupons);
 });
 
 
@@ -394,7 +427,7 @@ app.patch('/api/v1/loyalty/memberRewards/:rewardId/redeem', (req: any, res: any)
     }
 
     // Import response data
-    const redeemedRewardResponse = require('./sampleResponse/redeemedRewardResponse').default;
+    
 
     res.status(200).json(redeemedRewardResponse);
 });
